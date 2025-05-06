@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_app/core/theme/theme.dart';
 import 'package:flutter_bloc_app/features/auth/presentation/pages/signup_page.dart';
 
