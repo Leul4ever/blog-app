@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc_app/features/auth/presentation/widgets/auth_field.dart';
+import 'package:flutter_bloc_app/features/auth/presentation/widgets/auth_gradient_button.dart';
 
 class SignupPage extends StatelessWidget {
   const SignupPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Padding(
         padding: EdgeInsets.all(15),
         child: Column(
@@ -28,6 +29,17 @@ class SignupPage extends StatelessWidget {
               height: 15,
             ),
             AuthField(hintText: 'password'),
+            SizedBox(
+              height: 20,
+            ),
+            AuthGradientButton(),
+            const SizedBox(height: 20),
+            RichText(
+              text: TextSpan(
+                text: "Don't have an account?",
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
           ],
         ),
       ),
