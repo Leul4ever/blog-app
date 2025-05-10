@@ -1,5 +1,4 @@
 import 'package:flutter_bloc_app/core/error/failure.dart';
-
 import 'package:fpdart/fpdart.dart'; // Assuming you're using dartz for Either
 
 abstract interface class AuthRepository {
