@@ -12,7 +12,7 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   final emailController = TextEditingController();
-  final passwordControler = TextEditingController();
+  final passwordController = TextEditingController();
   final nameController = TextEditingController();
   final bool isObscuredText;
 
@@ -21,7 +21,7 @@ class _SignupPageState extends State<SignupPage> {
   void dispose() {
     super.dispose();
     emailController.dispose();
-    passwordControler.dispose();
+    passwordController.dispose();
     nameController.dispose();
     this.isObscuredText = false;
   }
