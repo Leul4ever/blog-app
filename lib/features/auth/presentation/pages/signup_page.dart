@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_app/core/theme/app_pallete.dart';
-import 'package:flutter_bloc_app/features/auth/domain/usecases/user_sign_up.dart';
 import 'package:flutter_bloc_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_bloc_app/features/auth/presentation/widgets/auth_field.dart';
 import 'package:flutter_bloc_app/features/auth/presentation/widgets/auth_gradient_button.dart';
