@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc_app/core/common/widgets/loader.dart';
 import 'package:flutter_bloc_app/core/theme/app_pallete.dart';
+import 'package:flutter_bloc_app/core/utils/show_snackbar.dart';
 import 'package:flutter_bloc_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_bloc_app/features/auth/presentation/widgets/auth_field.dart';
 import 'package:flutter_bloc_app/features/auth/presentation/widgets/auth_gradient_button.dart';
@@ -30,29 +32,21 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer<AuthBloc, AuthState>(
-        listener: (context, state) {
-          if (state is AuthFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
-              ),
-            );
-          } else if (state is AuthSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Signup successful!'),
-                backgroundColor: Colors.green,
-              ),
-            );
-            // TODO: Navigate to home page or login page
-          }
-        },
-        builder: (context, state) {
-          return Padding(
-            padding: const EdgeInsets.all(15),
-            child: Form(
+      body: Padding(
+        padding: const EdgeInsets.all(15),
+        child: BlocConsumer<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is AuthFailure) {
+              showSnackBar(context, state.message);
+            } else if (state is AuthSuccess) {
+              showSnackBar(context, 'Signup successful!');
+            }
+          },
+          builder: (context, state) {
+            if (state is AuthLoading) {
+              return const Loader();
+            }
+            return Form(
               key: formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -105,9 +99,9 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                 ],
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
