@@ -4,6 +4,7 @@ import 'package:flutter_bloc_app/core/common/widgets/loader.dart';
 import 'package:flutter_bloc_app/core/theme/app_pallete.dart';
 import 'package:flutter_bloc_app/core/utils/show_snackbar.dart';
 import 'package:flutter_bloc_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_bloc_app/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter_bloc_app/features/auth/presentation/widgets/auth_field.dart';
 import 'package:flutter_bloc_app/features/auth/presentation/widgets/auth_gradient_button.dart';
 
@@ -40,6 +41,10 @@ class _SignupPageState extends State<SignupPage> {
               showSnackBar(context, state.message);
             } else if (state is AuthSuccess) {
               showSnackBar(context, 'Signup successful!');
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
             }
           },
           builder: (context, state) {
@@ -81,20 +86,31 @@ class _SignupPageState extends State<SignupPage> {
                           },
                   ),
                   const SizedBox(height: 20),
-                  RichText(
-                    text: TextSpan(
-                      text: "Already  have an account? ",
-                      style: Theme.of(context).textTheme.titleMedium,
-                      children: [
-                        TextSpan(
-                          text: 'Sign In ',
-                          style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    color: AppPallete.gradient2,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                      ],
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginPage()),
+                      );
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                        text: "Already  have an account? ",
+                        style: Theme.of(context).textTheme.titleMedium,
+                        children: [
+                          TextSpan(
+                            text: 'Sign In ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  color: AppPallete.gradient2,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
