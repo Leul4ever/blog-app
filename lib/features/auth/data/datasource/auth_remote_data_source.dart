@@ -3,6 +3,7 @@ import 'package:flutter_bloc_app/features/auth/data/models/user_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract interface class AuthRemoteDataSource {
+  Session get currentUserSession;
   Future<UserModel> signUpWithEmailPassword({
     required String name,
     required String email,
@@ -12,12 +13,22 @@ abstract interface class AuthRemoteDataSource {
     required String email,
     required String password,
   });
+  Future<UserModel> getCurrentUser();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final SupabaseClient supabaseClient;
 
   AuthRemoteDataSourceImpl(this.supabaseClient);
+
+  @override
+  Session get currentUserSession {
+    final session = supabaseClient.auth.currentSession;
+    if (session == null) {
+      throw ServerException('No current session');
+    }
+    return session;
+  }
 
   @override
   Future<UserModel> signUpWithEmailPassword(
@@ -48,6 +59,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         throw ServerException('User is null');
       }
       return UserModel.fromJson(response.user!.toJson());
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<UserModel> getCurrentUser() async {
+    try {
+      final response = await supabaseClient
+          .from('profiles')
+          .select()
+          .eq('id', currentUserSession.user.id)
+          .single();
+
+      return UserModel.fromJson(response);
     } catch (e) {
       throw ServerException(e.toString());
     }

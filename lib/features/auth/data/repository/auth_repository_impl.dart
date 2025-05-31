@@ -5,11 +5,24 @@ import 'package:flutter_bloc_app/features/auth/data/models/user_model.dart';
 import 'package:flutter_bloc_app/features/auth/domain/entities/user.dart';
 import 'package:flutter_bloc_app/features/auth/domain/repository/auth_repository.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' as Sb;
+import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource authRemoteDataSource;
   AuthRepositoryImpl(this.authRemoteDataSource);
+  @override
+  Future<Either<Failure, User>> getCurrentUser() async {
+    try {
+      final user = await authRemoteDataSource.getCurrentUser();
+      // There is no need to check if user == null here because
+      // authRemoteDataSource.getCurrentUser() never returns null.
+      // It throws a ServerException if the user is not logged in.
+      // So this check is redundant and can be removed.
+      return right(user);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    }
+  }
 
   @override
   Future<Either<Failure, User>> signUpWithEmailPassword(
@@ -23,7 +36,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, User>> signInWithEmailPassword({
+  Future<Either<Failure, User>> loginWithEmailPassword({
     required String email,
     required String password,
   }) async {
@@ -41,16 +54,10 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final userModel = await fn();
       return right(userModel as User);
-    } on Sb.AuthException catch (e) {
+    } on sb.AuthException catch (e) {
       return left(Failure(e.message));
     } on ServerException catch (e) {
       return left(Failure(e.message));
     }
-  }
-
-  @override
-  loginWithEmailPassword({required email, required password}) {
-    // TODO: implement loginWithEmailPassword
-    throw UnimplementedError();
   }
 }
