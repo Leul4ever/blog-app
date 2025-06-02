@@ -2,6 +2,7 @@ import 'package:flutter_bloc_app/core/secrets/app_secrets.dart';
 import 'package:flutter_bloc_app/features/auth/data/datasource/auth_remote_data_source.dart';
 import 'package:flutter_bloc_app/features/auth/data/repository/auth_repository_impl.dart';
 import 'package:flutter_bloc_app/features/auth/domain/repository/auth_repository.dart';
+import 'package:flutter_bloc_app/features/auth/domain/usecases/current_user.dart';
 import 'package:flutter_bloc_app/features/auth/domain/usecases/user_login.dart';
 import 'package:flutter_bloc_app/features/auth/domain/usecases/user_sign_up.dart';
 import 'package:flutter_bloc_app/features/auth/presentation/bloc/auth_bloc.dart';
@@ -15,6 +16,7 @@ Future<void> initDependencies() async {
       url: AppSecrets.supabaseUrl, anonKey: AppSecrets.supabaseAnonKey);
   _initAuth(supabase.client);
   ServiceLocator.registerLazySingleton<SupabaseClient>(() => supabase.client);
+// ServiceLocator.registerLazySingleton(() => AppUserCubit());
 }
 
 void _initAuth(SupabaseClient supabase) {
@@ -30,6 +32,9 @@ void _initAuth(SupabaseClient supabase) {
     )
     ..registerFactory<UserLogin>(
       () => UserLogin(ServiceLocator()),
+    )
+    ..registerFactory(
+      () => CurrentUser(ServiceLocator()),
     )
     ..registerLazySingleton(() => AuthBloc(
           userSignUp: ServiceLocator(),
