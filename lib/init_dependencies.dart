@@ -37,8 +37,9 @@ void _initAuth(SupabaseClient supabase) {
       () => CurrentUser(ServiceLocator()),
     )
     ..registerLazySingleton(() => AuthBloc(
+          ServiceLocator(),
           userSignUp: ServiceLocator(),
           userLogin: ServiceLocator(),
           authRepository: ServiceLocator(),
+          appUserCubit: ServiceLocator(),
         ));
-}

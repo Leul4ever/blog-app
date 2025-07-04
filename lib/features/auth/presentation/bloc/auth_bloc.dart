@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_app/core/common/cubits/app_user/app_user_cubit.dart';
-import 'package:flutter_bloc_app/core/usecase/usecase..dart';
+import 'package:flutter_bloc_app/core/utils/usecase/usecase..dart';
 import 'package:flutter_bloc_app/core/common/entities/user.dart';
 import 'package:flutter_bloc_app/features/auth/domain/repository/auth_repository.dart';
 import 'package:flutter_bloc_app/features/auth/domain/usecases/current_user.dart';
@@ -68,13 +68,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
     res.fold(
       (l) => emit(AuthFailure(message: l.message)),
-      (r) {
-        print('Login successful for email: ${event.email}');
-        print('User ID: ${r.id}');
-        print('User Name: ${r.name}');
-        print('User Email: ${r.email}');
-       
-      },
+      (r)=>_emitAuthSuccess(r,emit),
     );
+  }
+  void  _emitAuthSuccess(User user, Emitter<AuthState> emit){
+    _appUserCubit.updateUser(user);
+    emit(AuthSuccess(user: user));
   }
 }
