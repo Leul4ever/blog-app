@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:flutter_bloc_app/core/usecase/usecase..dart';
-import 'package:flutter_bloc_app/features/auth/domain/entities/user.dart';
+import 'package:flutter_bloc_app/core/common/entities/user.dart';
 import 'package:flutter_bloc_app/features/auth/domain/repository/auth_repository.dart';
 import 'package:flutter_bloc_app/features/auth/domain/usecases/current_user.dart';
 import 'package:flutter_bloc_app/features/auth/domain/usecases/user_login.dart';
@@ -14,14 +15,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserSignUp _userSignUp;
   final UserLogin _userLogin;
   final CurrentUser _currentUser;
+  final AppUserCubit _appUserCubit;
 
-  AuthBloc({
+  AuthBloc(this._appUserCubit, {
     required UserSignUp userSignUp,
     required UserLogin userLogin,
     required AuthRepository authRepository,
+    required AppUserCubit appUserCubit,
   })  : _userSignUp = userSignUp,
         _userLogin = userLogin,
         _currentUser = CurrentUser(authRepository),
+        _appUserCubit = appUserCubit,
         super(AuthInitial()) {
     on<AuthSignUp>(_onAuthSignUp);
     on<AuthLogin>(_onAuthLogin);
@@ -31,8 +35,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       AuthIsUserLoggedIn event, Emitter<AuthState> emit) async {
     final res = await _currentUser(NoParams());
     res.fold(
-      (failure) => emit(AuthFailure(message: failure.message)),
-      (user) => emit(AuthSuccess(user: user)),
+      (l) => emit(AuthFailure(message: l.message)),
+      (r) {
+        print(r.email);
+        emit(AuthSuccess(user: r));
+      },
     );
   }
 
@@ -60,11 +67,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ),
     );
     res.fold(
-      (failure) => emit(AuthFailure(message: failure.message)),
-      (user) {
+      (l) => emit(AuthFailure(message: l.message)),
+      (r) {
         print('Login successful for email: ${event.email}');
-        print('User ID: ${user.id}');
-        emit(AuthSuccess(user: user));
+        print('User ID: ${r.id}');
+        print('User Name: ${r.name}');
+        print('User Email: ${r.email}');
+       
       },
     );
   }

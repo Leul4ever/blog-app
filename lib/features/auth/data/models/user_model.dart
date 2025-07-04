@@ -1,4 +1,4 @@
-import 'package:flutter_bloc_app/features/auth/domain/entities/user.dart';
+import 'package:flutter_bloc_app/core/common/entities/user.dart';
 
 class UserModel extends User {
   const UserModel({
@@ -6,11 +6,24 @@ class UserModel extends User {
     required super.email,
     required super.name,
   });
+
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'] ?? '',
       email: json['email'] ?? '',
       name: json['name'] ?? '',
+    );
+  }
+
+  UserModel copyWith({
+    String? id,
+    String? email,
+    String? name,
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      email: email ?? this.email,
+      name: name ?? this.name,
     );
   }
 }

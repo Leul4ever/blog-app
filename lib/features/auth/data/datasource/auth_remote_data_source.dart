@@ -22,6 +22,23 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   AuthRemoteDataSourceImpl(this.supabaseClient);
 
   @override
+  Future<UserModel> getCurrentUser() async {
+    try {
+      final response = await supabaseClient
+          .from('profiles')
+          .select()
+          .eq('id', currentUserSession.user.id)
+          .single();
+
+      return UserModel.fromJson(response).copyWith(
+        email: currentUserSession.user.email,
+      );
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
   Session get currentUserSession {
     final session = supabaseClient.auth.currentSession;
     if (session == null) {
@@ -59,21 +76,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         throw ServerException('User is null');
       }
       return UserModel.fromJson(response.user!.toJson());
-    } catch (e) {
-      throw ServerException(e.toString());
-    }
-  }
-
-  @override
-  Future<UserModel> getCurrentUser() async {
-    try {
-      final response = await supabaseClient
-          .from('profiles')
-          .select()
-          .eq('id', currentUserSession.user.id)
-          .single();
-
-      return UserModel.fromJson(response);
     } catch (e) {
       throw ServerException(e.toString());
     }
